@@ -5,6 +5,8 @@ import { Menu, Input, Row, Col } from "antd"
 import UserProfile from '../components/Userprofile'
 import LoginForm from '../components/LoginForm'
 import styled from 'styled-components';
+import {useSelector} from 'react-redux'
+
 
 const SearchInput = styled(Input.Search)`
     vertical-align : middle;
@@ -19,7 +21,7 @@ const Asd = styled(Col)`
 /* const style = useMemo(()=> ({textAlign : 'center'}), []) */
 
 const AppLayout = ({ children}) =>{
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const {isLoggedIn} = useSelector((state) => state.user)
     return (
         <div>
             <Menu mode="horizontal">
@@ -40,7 +42,7 @@ const AppLayout = ({ children}) =>{
             {/* gutter는 컬럼 사이의 간격 */}
             <Row gutter={8}  >
                 <Col xs={24} md={6}>
-                    {isLoggedIn ? <UserProfile setIsLoggedIn={setIsLoggedIn} /> : <LoginForm  setIsLoggedIn={setIsLoggedIn}/>}
+                    {isLoggedIn ? <UserProfile  /> : <LoginForm  />}
                 </Col>
                 <Asd xs={24} md={12} >
                     {children}
