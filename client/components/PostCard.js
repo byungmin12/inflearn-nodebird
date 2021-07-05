@@ -1,19 +1,22 @@
 import React,{useState, useCallback} from 'react'
-import {Card, Popover, Space, Avatar } from 'antd'
+import {Card, Popover, Space, Avatar, List, Comment } from 'antd'
 import post from '../reducers/post'
 import { EllipsisOutlined, HeartOutlined, MessageOutlined, RetweetOutlined,HeartTwoTone } from '@ant-design/icons'
 import { Button } from 'antd/lib/radio'
 import {useSelector} from "react-redux"
 import PostImages from './PostImages'
+import CommentForm from '../components/CommentForm.js'
+import PostCardContent from './PostCardContent'
 // import Avatar from 'antd/lib/avatar/avatar'
 
 function PostCard({post}) {
     const {me} = useSelector(state => state.user)
     const id = me?.id  //옵셔널 체이닝 연산자
     const [liked, setLiked] = useState(false)
-    const [conmentFormOpened, setConmentFormOpened] = useState(false)
+    const [commentFormOpened, setConmentFormOpened] = useState(false)
 
-    const onToggleLike = useCallback(()=>{
+    const onToggleLike = useCallback((prev)=>{
+        console.log("작동중")
         setLiked(prev=>!prev)
     },[])
 
@@ -28,8 +31,8 @@ function PostCard({post}) {
             actions={[
                 <RetweetOutlined key="retweet"/>,
                  liked 
-                    ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onToggleLike} />
-                    : <HeartOutlined key="heart"/>
+                    ? <HeartTwoTone twoToneColor="#f44336" key="heart" onClick={onToggleLike} />
+                    : <HeartOutlined key="heart" onClick={onToggleLike}/>
                  ,
                 <MessageOutlined key="comment" onClick={onToggleComment}/>,
                 <Popover key="more" content={(
@@ -53,9 +56,27 @@ function PostCard({post}) {
                 <Card.Meta
                     avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
                     title={post.User.nickname}
-                    description={post.content}
+                    description={<PostCardContent postData={post.content} />}
                 />
             </Card>
+            {commentFormOpened 
+            && 
+            <div>
+                <CommentForm post={post} />   
+                <List 
+                    header={`${post.Comments.length}개의 댓글`}
+                    itemLayout="horizontal"
+                    dataSource={post.Comments}
+                    renderItem={item=>(
+                        <li>
+                            <Comment
+                                author={item.User.nickname}
+                                content={item.content}
+                            />
+                        </li>
+                    )}
+                /> 
+            </div>}
         </div>
     )
 }

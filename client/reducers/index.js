@@ -9,6 +9,7 @@ import { combineReducers } from "redux"
 const rootReducer = combineReducers({
     //서버사이드렌더링을 위해서 index를 추가한 거고 안에 reducer를 통해 HYDRATE을 작성해준것이다. 
     index: (state={}, action )=>{
+        console.log('컴파인리듀서부분이 실행됩니다.index.js')
         switch(action.type) {
             case HYDRATE :
                 console.log("HYDRATE", action)
