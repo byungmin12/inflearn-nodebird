@@ -4,9 +4,12 @@ import Head from 'next/head'
 import { Form, Input, Checkbox, Button } from "antd";
 import useInput from "../hooks/useInput";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { SIGN_UP_REQUEST } from "../reducers/user";
+
 
 const Signup=() =>{
-    const [id, onChageId] = useInput('')
+    const [email, onChageEmail] = useInput('')
     const [nickName, onChageNickName] = useInput('')
 
 
@@ -26,7 +29,10 @@ const Signup=() =>{
         setTermError(false)
     },[])
 
-
+    //리듀서 관련 
+   const dispatch = useDispatch()
+   const {signUpLoading} = useSelector(state=>state.user)
+   
 
     const onSubmit = useCallback(()=>{
         // 자동으로 e.preventdefault가 됌
@@ -37,7 +43,11 @@ const Signup=() =>{
             return setTermError(true)
         }
 
-        console.log(id,nickName,password)
+        console.log(email,nickName,password)
+        dispatch({
+            type: SIGN_UP_REQUEST,
+            data: email, password, nickName
+        })
     },[password, passwordCheck, term])
 
     const ErrorMessage = styled.div`
@@ -51,9 +61,9 @@ const Signup=() =>{
             </Head>
             <Form onFinish={onSubmit}>
                 <div>
-                    <label htmlFor="user-id">아이디</label>
+                    <label htmlFor="user-email">이메일</label>
                     <br/>
-                    <Input name="user-id" value={id} required onChange={onChageId}/>
+                    <Input name="user-email" value={email} type="email" required onChange={onChageEmail}/>
                 </div>
                 <div>
                     <label htmlFor="user-nickName">닉네임</label>
@@ -76,7 +86,7 @@ const Signup=() =>{
                     {termError && <ErrorMessage>약관에 동의하셔야 합니다.</ErrorMessage>}
                 </div>
                 <div style={{marginTop: 10}}>
-                    <Button type= "primary" htmlType="submit">가입하기</Button>
+                    <Button type= "primary" htmlType="submit" loading={signUpLoading}>가입하기</Button>
                 </div>
             </Form>
         </AppLayout>

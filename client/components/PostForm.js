@@ -1,23 +1,27 @@
-import React ,{useCallback, useState} from 'react'
+import React ,{useCallback, useState, useEffect} from 'react'
 import {Form, Input, Button, Upload, Modal} from 'antd'
 import { PlusOutlined } from '@ant-design/icons'; 
 import {useSelector, useDispatch} from "react-redux"
 import { addPost } from '../reducers/post'
+import useInput from '../hooks/useInput'
+
 
 function PostForm() {
-    const {imagePaths} = useSelector(state => state.post)
-    const [text, setText] = useState('')
+    const {imagePaths, addPostDone} = useSelector(state => state.post)
+    const [text, onChangeText,setText] = useInput('')
     const dispatch = useDispatch()
-    const onChangeText = useCallback(
-        (e) => {
-            setText(e.target.valuse)
-        },
-        [],
-    )
+
+    //게시글 올리기가 완료되면 텍스트 창 초기화 
+    useEffect(()=>{
+        if(addPostDone){
+            setText('')
+        }
+    },[addPostDone])
+
+    
     const onSubmit = useCallback(() => {
-        dispatch(addPost);
-        setText('')
-      }, []);
+        dispatch(addPost(text));
+      }, [text]);
 
     return (
         <div>
